@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+    </head>
+    <body onload="init();">
+        <div>
+            <canvas id="advertisement" width="400" height="400"></canvas>
+        </div>
+
+        <script type="text/javascript" src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
+        <script type="text/javascript"
+src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Collision.js"></script>
+        <script id="adScript">
+            var stage;
+            var holder;
+            var text;
+            var image;
+            var bitmap;
+            var cursor;
+            var cur;
+
+            function init () {
+                stage = new createjs.Stage('advertisement');
+
+                text = new createjs.Text(
+                    'Swipe away her acne now!',
+                    '20px Arial',
+                    '#000000'
+                );
+                text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 40});
+                text.textAlign = 'center';
+
+                image = new Image();
+                image.onload = handleComplete;
+                image.src = '/assets/images/face.jpg?asf';
+            }
+
+            function handleComplete () {
+                createjs.Touch.enable(stage);
+
+                cursor = new Image();
+                cursor.onload = addCursor;
+                cursor.src = '/assets/images/ponds.png';
+
+                bitmap = new createjs.Bitmap(image);
+                bitmap.scaleX = 400/bitmap.image.width;
+                bitmap.scaleY = 400/bitmap.image.height;
+                stage.addChild(text);
+                stage.addChild(bitmap);
+
+                holder = stage.addChild(new createjs.Container());
+                holder.x = holder.y = 0;
+
+                createAcne();
+                stage.update();
+            }
+
+            function createAcne (count) {
+                var total = count || 10;
+
+                for (var i = 0; i < total; i++) {
+                    var circle = new createjs.Shape();
+                    circle.graphics.beginFill('#e1e1e1').drawCircle(0,0,4);
+                    circle.x = randomBet(200,300);
+                    circle.y = randomBet(1, 300);
+                    holder.addChild(circle);
+                }
+
+            }
+
+            function addCursor () {
+                cur = new createjs.Bitmap(cursor);
+                cur.scaleX = 50/cur.image.width;
+                cur.scaleY = 50/cur.image.height;
+                cur.cursor = 'pointer';
+
+                cur.on("pressmove", function (evt) {
+                    var bounds = cur.getBounds();
+                    evt.target.x = evt.stageX - (bounds.width * cur.scaleX)/2;
+                    evt.target.y = evt.stageY - (bounds.height * cur.scaleY)/2;
+                    tick();
+                });
+
+                stage.addChild(cur);
+
+                stage.enableMouseOver();
+                stage.update();
+                createjs.Ticker.on('tick', function (e) {
+                    stage.update(e);
+                });
+            }
+
+            function tick (evt) {
+                var l = holder.getNumChildren();
+                for (var i = 0; i < l; i++) {
+                    var child = holder.getChildAt(i);
+
+                    if (!child) {
+                        return;
+                    }
+
+                    var pt = child.globalToLocal(stage.mouseX, stage.mouseY);
+
+                    if (ndgmr.checkRectCollision(cur, child)) {
+                        holder.removeChild(child);
+
+                        if (l === 1) {
+                            gameOver();
+                        }
+                    }
+
+                }
+
+                evt && stage.update(evt);
+            }
+
+            function gameOver () {
+                stage.removeAllChildren();
+
+                text = new createjs.Text(
+                    'Pond’s Acne Clear White Facial Wash\n' +
+                    'is the ultimate must-have because it fights\n'+
+                    '10 oil and acne problems,\nclick here to find out more',
+                    '20px Arial',
+                    '#000000'
+                );
+                text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 80});
+                text.textAlign = 'center';
+
+                var hit = new createjs.Shape();
+                hit.graphics
+                    .beginFill("#000")
+                    .drawRect(0, 0, text.getMeasuredWidth(), text.getMeasuredHeight());
+
+                text.hitArea = hit;
+
+                text.on('click', function (evt) {
+                    console.log('click');
+                    window.location.href = 'http://adin234.com';
+                });
+
+                text.cursor = 'pointer';
+
+                stage.addChild(text);
+                stage.update();
+            }
+
+            function randomBet(min, max) {
+                return Math.floor(Math.random() * (max - min + 1) + min);
+            }
+        </script>
+    </body>
+</html>
