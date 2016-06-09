@@ -18,29 +18,61 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
             var bitmap;
             var cursor;
             var cur;
+            var startGameText;
+            var startGameO;
+            var isStarted;
+            var ponds
 
             function init () {
                 stage = new createjs.Stage('advertisement');
 
-                text = new createjs.Text(
-                    'Swipe away her acne now!',
-                    '20px Arial',
-                    '#000000'
-                );
-                text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 40});
-                text.textAlign = 'center';
+                stage.on('stagemousemove', function (e) {
+                    if (!isStarted) {
+                        isStarted = true;
+                        initCursor();
+                        stage.removeChild(startGameO);
+                        return stage.removeChild(startGameText);
+                    }
 
+                    moveCursor(e);
+                });
+
+                addHuman();
+            }
+
+            function addHuman () {
                 image = new Image();
                 image.onload = handleComplete;
                 image.src = '/assets/images/face.jpg?asf';
+
+                ponds = new Image();
+                ponds.onload = cachePonds;
+                ponds.src = '/assets/images/lastpage.jpg';
+            }
+
+            function cachePonds () {
+                ponds = new createjs.Bitmap(ponds);
+                ponds.scaleX = 400/ponds.image.width;
+                ponds.scaleY = 400/ponds.image.height;
             }
 
             function handleComplete () {
                 createjs.Touch.enable(stage);
+                startGameText = new createjs.Text(
+                    'Swipe away her acne now!',
+                    '30px Arial',
+                    '#000000'
+                );
 
-                cursor = new Image();
-                cursor.onload = addCursor;
-                cursor.src = '/assets/images/ponds.png';
+                startGameText.set({
+                    x: stage.canvas.width / 2,
+                    y: stage.canvas.height/2
+                });
+                startGameText.textAlign = 'center';
+
+                startGameO = startGameText.clone();
+                startGameO.outline = 5;
+                startGameO.color = "#fff";
 
                 bitmap = new createjs.Bitmap(image);
                 bitmap.scaleX = 400/bitmap.image.width;
@@ -52,7 +84,15 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                 holder.x = holder.y = 0;
 
                 createAcne();
+                stage.addChild(startGameO, startGameText);
                 stage.update();
+            }
+
+            function initCursor () {
+                cursor = new Image();
+                cursor.onload = addCursor;
+                cursor.src = '/assets/images/ponds.png';
+
             }
 
             function createAcne (count) {
@@ -60,7 +100,11 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
 
                 for (var i = 0; i < total; i++) {
                     var circle = new createjs.Shape();
-                    circle.graphics.beginFill('#e1e1e1').drawCircle(0,0,4);
+                    circle.graphics.beginRadialGradientFill(
+                        ["#DE7B68", "#DCBEB3"],
+                        [0, 1], 0, 0, 1, 0, 0, 6
+                    )
+                    .drawCircle(0, 0, 3);
                     circle.x = randomBet(200,300);
                     circle.y = randomBet(1, 300);
                     holder.addChild(circle);
@@ -74,12 +118,7 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                 cur.scaleY = 50/cur.image.height;
                 cur.cursor = 'pointer';
 
-                cur.on("pressmove", function (evt) {
-                    var bounds = cur.getBounds();
-                    evt.target.x = evt.stageX - (bounds.width * cur.scaleX)/2;
-                    evt.target.y = evt.stageY - (bounds.height * cur.scaleY)/2;
-                    tick();
-                });
+                cur.on("pressmove", moveCursor);
 
                 stage.addChild(cur);
 
@@ -88,6 +127,14 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                 createjs.Ticker.on('tick', function (e) {
                     stage.update(e);
                 });
+            }
+
+            function moveCursor (evt) {
+                var bounds = cur.getBounds();
+
+                cur.x = evt.stageX - (bounds.width * cur.scaleX)/2;
+                cur.y = evt.stageY - (bounds.height * cur.scaleY)/2;
+                tick();
             }
 
             function tick (evt) {
@@ -124,23 +171,24 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                     '20px Arial',
                     '#000000'
                 );
-                text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 80});
                 text.textAlign = 'center';
 
+                var bounds = text.getBounds();
                 var hit = new createjs.Shape();
                 hit.graphics
                     .beginFill("#000")
-                    .drawRect(0, 0, text.getMeasuredWidth(), text.getMeasuredHeight());
+                    .drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
 
                 text.hitArea = hit;
+                text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 80});
 
                 text.on('click', function (evt) {
-                    console.log('click');
                     window.location.href = 'http://adin234.com';
                 });
 
                 text.cursor = 'pointer';
 
+                stage.addChild(ponds);
                 stage.addChild(text);
                 stage.update();
             }
