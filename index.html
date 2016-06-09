@@ -4,7 +4,7 @@
     </head>
     <body onload="init();">
         <div>
-            <canvas id="advertisement" width="400" height="400"></canvas>
+            <canvas id="advertisement" width="300" height="250"></canvas>
         </div>
 
         <script type="text/javascript" src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
@@ -43,7 +43,7 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
             function addHuman () {
                 image = new Image();
                 image.onload = handleComplete;
-                image.src = 'assets/images/face.jpg?asf';
+                image.src = 'assets/images/face.png';
 
                 ponds = new Image();
                 ponds.onload = cachePonds;
@@ -52,15 +52,15 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
 
             function cachePonds () {
                 ponds = new createjs.Bitmap(ponds);
-                ponds.scaleX = 400/ponds.image.width;
-                ponds.scaleY = 400/ponds.image.height;
+                ponds.scaleX = 300/ponds.image.width;
+                ponds.scaleY = 250/ponds.image.height;
             }
 
             function handleComplete () {
                 createjs.Touch.enable(stage);
                 startGameText = new createjs.Text(
                     'Swipe away her acne now!',
-                    '30px Arial',
+                    '20px Arial',
                     '#000000'
                 );
 
@@ -75,8 +75,8 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                 startGameO.color = "#fff";
 
                 bitmap = new createjs.Bitmap(image);
-                bitmap.scaleX = 400/bitmap.image.width;
-                bitmap.scaleY = 400/bitmap.image.height;
+                bitmap.scaleX = 300/bitmap.image.width;
+                bitmap.scaleY = 250/bitmap.image.height;
                 stage.addChild(text);
                 stage.addChild(bitmap);
 
@@ -102,11 +102,11 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                     var circle = new createjs.Shape();
                     circle.graphics.beginRadialGradientFill(
                         ["#DE7B68", "#DCBEB3"],
-                        [0, 1], 0, 0, 1, 0, 0, 6
+                        [0, 1], 0, 0, 1, 0, 0, 4
                     )
-                    .drawCircle(0, 0, 3);
-                    circle.x = randomBet(200,300);
-                    circle.y = randomBet(1, 300);
+                    .drawCircle(0, 0, 2);
+                    circle.x = randomBet(105, 212);
+                    circle.y = randomBet(53, 188);
                     holder.addChild(circle);
                 }
 
@@ -168,7 +168,7 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                     'Pond’s Acne Clear White Facial Wash\n' +
                     'is the ultimate must-have because it fights\n'+
                     '10 oil and acne problems,\nclick here to find out more',
-                    '20px Arial',
+                    '15px Arial',
                     '#000000'
                 );
                 text.textAlign = 'center';
