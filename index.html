@@ -43,6 +43,11 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                         isStarted = true;
                         initCursor();
                         stage.removeChild(startGameO);
+                        ga('send', 'event', {
+                            eventCategory: 'IAD3 - Pimple Swipe',
+                            eventAction: 'IAD3- Swipe Start',
+                            eventLabel: 'Shwemom Test Creative 3'
+                        });
                         return stage.removeChild(startGameText);
                     }
 
@@ -175,6 +180,12 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
 
             function gameOver () {
                 stage.removeAllChildren();
+                
+                ga('send', 'event', {
+                    eventCategory: 'IAD3 - Pimple Swipe',
+                    eventAction: 'IAD3- Swipe Success',
+                    eventLabel: 'Shwemom Test Creative 3'
+                });
 
                 text = new createjs.Text(
                     'Pond’s Acne Clear White Facial Wash\n' +
@@ -195,6 +206,11 @@ src="https://rawgit.com/olsn/Collision-Detection-for-EaselJS/master/src/ndgmr.Co
                 text.set({x: stage.canvas.width / 2, y: stage.canvas.height - 80});
 
                 text.on('click', function (evt) {
+                    ga('send', 'event', {
+                        eventCategory: 'IAD3 - Pimple Swipe',
+                        eventAction: 'IAD3- Outbound Click',
+                        eventLabel: 'Shwemom Test Creative 3'
+                    });
                     window.open('http://www.shwemom.com/');
                 });
 
